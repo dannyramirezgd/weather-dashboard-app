@@ -1,7 +1,14 @@
+var cityInputEl = document.querySelector("#city-name");
+var stateInputEl = document.querySelector("#states");
 //fetch data from weather api by lat lon and exclude any parts?
 var getLocationInfo = function(city, state){
+    var cityInput = cityInputEl.textContent
+    var stateInput = stateInputEl.value
+    console.log(city);
+    console.log(state);
     var apiUrl = "http://api.geonames.org/searchJSON?q=" + city + "&adminCode1=" + state + "&maxRows=10&username=dannyramirezgd"
     
+
     fetch(apiUrl).then(function(response){
         if(response.ok){
             response.json().then(function(data){
@@ -26,11 +33,14 @@ var getWeatherInfo = function (lat, lon){
     })
 }
 //create a function on search
+//have the input form take in City
+//create a drop down for State
+//pull content from each and turn into string and push into "city" & "state" getLocationInfo function
     // is there a way to search up cities and be given their lat and lon? 
 //after search is made add info as button into list under the form into local storage
 //local storage should be the last city searched
 getWeatherInfo("20.45","-40.18");
-getLocationInfo("springfield","VA")
+getLocationInfo(cityInput, stateInput)
 //the info I need
 //current weather conditions
     //object.current.weather[0].main describes the weather icon?
