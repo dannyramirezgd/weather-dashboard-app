@@ -1,7 +1,20 @@
 //fetch data from weather api by lat lon and exclude any parts?
+var getLocationInfo = function(city, state){
+    var apiUrl = "http://api.geonames.org/searchJSON?q=" + city + "&adminCode1=" + state + "&maxRows=10&username=dannyramirezgd"
+    
+    fetch(apiUrl).then(function(response){
+        if(response.ok){
+            response.json().then(function(data){
+                console.log(data);
+            });
+        }else{
+            alert("Error")
+        }
+    })
+}
 var getWeatherInfo = function (lat, lon){
     var apiUrl = "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat +"&lon=" + lon +"&units=imperial&appid=56d05661cb74c3389542f3c94dddc04e"
-    console.log(apiUrl);
+
     fetch(apiUrl).then(function(response){
         if(response.ok){
             response.json().then(function(data){
@@ -17,6 +30,7 @@ var getWeatherInfo = function (lat, lon){
 //after search is made add info as button into list under the form into local storage
 //local storage should be the last city searched
 getWeatherInfo("20.45","-40.18");
+getLocationInfo("springfield","VA")
 //the info I need
 //current weather conditions
     //object.current.weather[0].main describes the weather icon?
