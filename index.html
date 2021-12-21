@@ -12,6 +12,7 @@
 </header>
 <body>
     <form id="city-form">
+        <h2>Search for a City</h2>
         <label for="city-name">City Name</label>
         <input name="city-name" id="city-name" type="text" autofocus="true"/>
         <label for="states">State</label>
@@ -68,10 +69,11 @@
             <option value="WI">Wisconsin</option>
             <option value="WY">Wyoming</option>
         </select>
-        <button>Austin</button>
+        <button id="search-btn">search</button>
     </form>
     <div>
-        Display current data here
+        <h2 id="focus-city"></h2>
+        <ul id="city-descriptors"></ul>
     </div>
     <div>
         Display 5 cards with forecast
