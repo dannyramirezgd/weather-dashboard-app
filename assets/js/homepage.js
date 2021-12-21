@@ -5,6 +5,8 @@ var select = document.getElementById("states");
 var cityInput = document.getElementById("city-name");
 var focusCityEl = document.getElementById("focus-city");
 var cityDescriptors = document.getElementById("city-descriptors");
+var searchHistoryEl = document.getElementById("search-history");
+var forecastEl = document.getElementById("forecast");
 
 //grabbing input from form and dropdown and pulling the lat and lon
 var getLocationInfo = function(city, state){
@@ -42,21 +44,54 @@ var searchButtonHandler = function (event){
     var value = select.options[select.selectedIndex].value;
     var cityName = cityInput.value;
     getLocationInfo(cityName, value)
+    localStorage.setItem("cityname", JSON.stringify(cityName, value));
     createFocusedCity();
+    searchHistory();
+    createFutureCity();
 }
 var createFocusedCity = function(){
     var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
-    console.log(getWeatherInfo.current.temp);
     focusCityEl.textContent = "";
     focusCityEl.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value; 
     var tempEl = document.createElement("li");
-    tempEl.textContent = "Current Temp: ";
+    tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
     var windEl = document.createElement("li");
+    windEl.textContent = "Wind Speed: " + getWeatherInfo.current.wind_speed + " mph"
+    var humidEl = document.createElement("li");
+    humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%"
     var uviEl = document.createElement("li");
-    //focusCityEl.appendChild(cityNameEl);
+    uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi 
+    focusCityEl.appendChild(tempEl);
+    focusCityEl.appendChild(windEl);
+    focusCityEl.appendChild(uviEl); 
+}
+var searchHistory = function(){
+    var searchHistoryBtn = document.createElement("button")
+    searchHistoryBtn.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value;
+    searchHistoryEl.appendChild(searchHistoryBtn);
 }
 var createFutureCity = function(){
-    //this is where the future forecast will go
+    var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
+        for (let i=0; i<5; i++){
+            var forecastListContainerEl = document.createElement("div");
+            //get moment.js and add a day each time
+            //add if statement for current weather and add icon
+            //create ul for all the elements
+            var forecastListEl = document.createElement("ul");
+            //create an li for all the different forecasts
+            var forecastTempEl = document.createElement("li");
+            forecastTempEl.textContent = "Temp: " + getWeatherInfo.daily[i].temp.day + " °F"
+            var forecastWindEl = document.createElement("li");
+            forecastWindEl.textContent = "Wind Speed: " + getWeatherInfo.daily[i].wind_speed + " mph"
+            var forecastHumidEl = document.createElement("li");
+            forecastHumidEl.textContent = "Humidity: " + getWeatherInfo.daily[i].humidity + "%"
+            forecastListEl.appendChild(forecastTempEl);
+            forecastListEl.appendChild(forecastWindEl);
+            forecastListEl.appendChild(forecastHumidEl) 
+            forecastListContainerEl.appendChild(forecastListEl);
+            forecastEl.appendChild(forecastListContainerEl);
+
+    }
 }
 //after search is made add info as button into list under the form into local storage
 //local storage should be the last city searched
@@ -78,12 +113,4 @@ var createFutureCity = function(){
         //cloudy - cloud - word is main:"Clouds"
         //rainy - water drop - word is main:"Rain"
         //snowy - snowflake - word is main:"Snow"
-//the temperature
-    //object.current.temp
-//the humidity
-    //object.current.humidity
-//the wind speed
-    //object.current.wind_speed
-//uv index
-    //object.current.uvi
 searchBtnEl.addEventListener("click", searchButtonHandler);
