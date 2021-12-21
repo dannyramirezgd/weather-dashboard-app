@@ -49,10 +49,14 @@ var searchButtonHandler = function (event){
     searchHistory();
     createFutureCity();
 }
+//create container and information for the searched city
 var createFocusedCity = function(){
     var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
     focusCityEl.textContent = "";
     focusCityEl.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value; 
+    var currentDate = new Date(getWeatherInfo.current.dt * 1000)
+    var dateEl = document.createElement("div");
+    dateEl.textContent = currentDate.toLocaleString();
     var tempEl = document.createElement("li");
     tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
     var windEl = document.createElement("li");
@@ -61,15 +65,18 @@ var createFocusedCity = function(){
     humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%"
     var uviEl = document.createElement("li");
     uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi 
+    focusCityEl.appendChild(dateEl);
     focusCityEl.appendChild(tempEl);
     focusCityEl.appendChild(windEl);
     focusCityEl.appendChild(uviEl); 
 }
+//create new button for each searched city to create a search history
 var searchHistory = function(){
     var searchHistoryBtn = document.createElement("button")
     searchHistoryBtn.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value;
     searchHistoryEl.appendChild(searchHistoryBtn);
 }
+//create the 5 day forecast based on the city searched
 var createFutureCity = function(){
     var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
         for (let i=0; i<5; i++){
@@ -93,18 +100,6 @@ var createFutureCity = function(){
 
     }
 }
-//after search is made add info as button into list under the form into local storage
-//local storage should be the last city searched
-
-//the info I need
-//current weather conditions
-    //object.current.weather[0].main describes the weather icon?
-//future weather conditions
-    //object.daily[i from 0-4].temp.day
-    //object.daily[i from 0-4].wind_speed
-    //object.daily[i from 0-4].humidity
-//city name
-    //doesn't display name in data need to find another way to do it. Maybe just append with text content in form? 
 //the date
     //object.current.dt need to format unix into readable date
 //icon of weather conditions
