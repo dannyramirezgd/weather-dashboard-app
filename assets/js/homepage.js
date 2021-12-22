@@ -5,7 +5,6 @@ var searchBtnEl = document.querySelector("#search-btn");
 var select = document.getElementById("states");
 var cityInput = document.getElementById("city-name");
 var focusCityEl = document.getElementById("focus-city");
-var cityDescriptors = document.getElementById("city-descriptors");
 var searchHistoryEl = document.getElementById("search-history");
 var forecastEl = document.getElementById("forecast");
 var searchHistoryBtnEl = document.getElementById("search-history");
@@ -141,14 +140,30 @@ var createFocusedCity = function (city, state) {
   var dateEl = document.createElement("div");
   dateEl.textContent = "(" + currentDate + ")"
   var tempEl = document.createElement("li");
+  tempEl.setAttribute("class", "list-group-item border-0")
   tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
   var windEl = document.createElement("li");
+  windEl.setAttribute("class", "list-group-item border-0")
   windEl.textContent =
     "Wind Speed: " + getWeatherInfo.current.wind_speed + " mph";
   var humidEl = document.createElement("li");
+  humidEl.setAttribute("class", "list-group-item border-0")
   humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%";
   var uviEl = document.createElement("li");
-  uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi;
+  uviEl.setAttribute("class", "list-group-item border-0")
+  uviEl.textContent = "UV Index: ";
+  var uviElColor = document.createElement("span");
+  if(getWeatherInfo.current.uvi <= 2){
+    uviElColor.setAttribute("class", "bg-success")
+  }
+  if(getWeatherInfo.current.uvi >= 3 || getWeatherInfo.current.uvi <=7){
+    uviElColor.setAttribute("class", "bg-warning");
+  }
+  if(getWeatherInfo.current.uvi > 7){
+    uviElColor.setAttribute("class","bg-danger");
+  }
+  uviElColor.textContent = getWeatherInfo.current.uvi
+  uviEl.appendChild(uviElColor);
   dateEl.appendChild(weatherIcon);
   focusCityEl.appendChild(dateEl);
   focusCityEl.appendChild(tempEl);
@@ -164,6 +179,7 @@ var searchHistory = function () {
     var searchHistoryArr = JSON.parse(localStorage.getItem("cityNameArr"));
     for (var i = 0; i < searchHistoryArr.length; i++) {
         var searchHistoryBtn = document.createElement("button");
+        searchHistoryBtn.setAttribute("class", "btn btn-info w-100 mt-2")
         searchHistoryBtn.textContent = searchHistoryArr[i].cityName + ", " + searchHistoryArr[i].state;
         searchHistoryBtn.setAttribute("id", "history-btn");
         searchHistoryEl.appendChild(searchHistoryBtn);
@@ -176,6 +192,7 @@ var singleSearchHisBtn = function (){
     var selectValue = select.options[select.selectedIndex].value;
     var searchHistoryBtn = document.createElement("button");
     searchHistoryBtn.setAttribute("id", "history-btn");
+    searchHistoryBtn.setAttribute("class", "btn btn-info w-100 mt-2")
     searchHistoryBtn.textContent = cityName + ", " + selectValue;
     searchHistoryEl.appendChild(searchHistoryBtn);
 }
@@ -261,14 +278,30 @@ var createFocusedCitySearchHis = function(){
     var dateEl = document.createElement("div");
     dateEl.textContent = "(" + currentDate + ")"
     var tempEl = document.createElement("li");
+    tempEl.setAttribute("class", "list-group-item border-0")
     tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
     var windEl = document.createElement("li");
+    windEl.setAttribute("class", "list-group-item border-0")
     windEl.textContent =
       "Wind Speed: " + getWeatherInfo.current.wind_speed + " mph";
     var humidEl = document.createElement("li");
+    humidEl.setAttribute("class", "list-group-item border-0")
     humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%";
     var uviEl = document.createElement("li");
-    uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi;
+    uviEl.setAttribute("class", "list-group-item border-0")
+    uviEl.textContent = "UV Index: ";
+    var uviElColor = document.createElement("span");
+    if(getWeatherInfo.current.uvi <= 2){
+      uviElColor.setAttribute("class", "bg-success")
+    }
+    if(getWeatherInfo.current.uvi >= 3 && getWeatherInfo.current.uvi <=7){
+      uviElColor.setAttribute("class", "bg-warning");
+    }
+    if(getWeatherInfo.current.uvi > 7){
+      uviElColor.setAttribute("class","bg-danger");
+    }
+    uviElColor.textContent = getWeatherInfo.current.uvi
+    uviEl.appendChild(uviElColor);
     dateEl.appendChild(weatherIcon);
     focusCityEl.appendChild(dateEl);
     focusCityEl.appendChild(tempEl);
@@ -279,6 +312,7 @@ var createFocusedCitySearchHis = function(){
 //create the 5 day forecast based on the city searched
 var createFutureCity = function () {
     forecastEl.innerHTML = "";
+//var cardContainerEl = document.createElement("div");
   var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
   for (let i = 0; i < 5; i++) {
     if (getWeatherInfo.daily[i].weather[0].main === "Clear"){
@@ -298,29 +332,35 @@ var createFutureCity = function () {
       weatherIcon.setAttribute ("class",'ri-snowy-line')
     }
     var forecastListContainerEl = document.createElement("div");
+    forecastListContainerEl.setAttribute("class", "card-body");
     //get moment.js and add a day each time
     var futureDate = moment().add(i+1, "days").format("M/D/YYYY");
     var futureDateEl = document.createElement("div");
-    futureDateEl.textContent = "(" + futureDate + ")"
+    futureDateEl.setAttribute("class", "text-white")
+    futureDateEl.textContent = "(" + futureDate + ") "
     //create ul for all the elements
     var forecastListEl = document.createElement("ul");
+    forecastListEl.setAttribute("class","card col-2 bg-primary")
     //create an li for all the different forecasts
     var forecastTempEl = document.createElement("li");
+    forecastTempEl.setAttribute("class", "list-group-item border-0 bg-primary text-white");
     forecastTempEl.textContent =
-      "Temp: " + getWeatherInfo.daily[i].temp.day + " °F";
+      "Temp: " + getWeatherInfo.daily[i].temp.day + "°F";
     var forecastWindEl = document.createElement("li");
+    forecastWindEl.setAttribute("class", "list-group-item border-0 bg-primary text-white");
     forecastWindEl.textContent =
-      "Wind Speed: " + getWeatherInfo.daily[i].wind_speed + " mph";
+      "Wind Speed: " + getWeatherInfo.daily[i].wind_speed + "mph";
     var forecastHumidEl = document.createElement("li");
+    forecastHumidEl.setAttribute("class", "list-group-item border-0 bg-primary text-white");
     forecastHumidEl.textContent =
       "Humidity: " + getWeatherInfo.daily[i].humidity + "%";
     futureDateEl.appendChild(weatherIcon);
-    forecastListEl.appendChild(futureDateEl);
-    forecastListEl.appendChild(forecastTempEl);
-    forecastListEl.appendChild(forecastWindEl);
-    forecastListEl.appendChild(forecastHumidEl);
-    forecastListContainerEl.appendChild(forecastListEl);
-    forecastEl.appendChild(forecastListContainerEl);
+    forecastListContainerEl.appendChild(futureDateEl);
+    forecastListContainerEl.appendChild(forecastTempEl);
+    forecastListContainerEl.appendChild(forecastWindEl);
+    forecastListContainerEl.appendChild(forecastHumidEl);
+    forecastListEl.appendChild(forecastListContainerEl);
+    forecastEl.appendChild(forecastListEl);
   }
 };
 //the date
