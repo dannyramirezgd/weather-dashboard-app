@@ -11,12 +11,11 @@ var selectValue = select.options[select.selectedIndex].value;
 var cityNameObj = {};
 var cityNameArr = [];
 var saveCityNameArr = function(){
-    // cityNameArr.push(cityNameObj)
     if(!JSON.parse(localStorage.getItem("cityNameArr"))){
+        cityNameArr.push(cityNameObj);
        localStorage.setItem("cityNameArr", JSON.stringify(cityNameArr));
     } else{ 
         var tempCityNameArr = JSON.parse(localStorage.getItem("cityNameArr"));
-        console.log(tempCityNameArr);
         tempCityNameArr.push(cityNameObj);
         cityNameArr = tempCityNameArr;
         localStorage.setItem("cityNameArr", JSON.stringify(cityNameArr));
