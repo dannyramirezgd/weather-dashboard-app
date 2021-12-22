@@ -7,7 +7,22 @@ var focusCityEl = document.getElementById("focus-city");
 var cityDescriptors = document.getElementById("city-descriptors");
 var searchHistoryEl = document.getElementById("search-history");
 var forecastEl = document.getElementById("forecast");
-
+var selectValue = select.options[select.selectedIndex].value;
+var cityNameObj = {};
+var cityNameArr = [];
+var saveCityNameArr = function(){
+    // cityNameArr.push(cityNameObj)
+    if(!JSON.parse(localStorage.getItem("cityNameArr"))){
+       localStorage.setItem("cityNameArr", JSON.stringify(cityNameArr));
+    } else{ 
+        var tempCityNameArr = JSON.parse(localStorage.getItem("cityNameArr"));
+        console.log(tempCityNameArr);
+        tempCityNameArr.push(cityNameObj);
+        cityNameArr = tempCityNameArr;
+        localStorage.setItem("cityNameArr", JSON.stringify(cityNameArr));
+        };
+}
+    
 //grabbing input from form and dropdown and pulling the lat and lon
 var getLocationInfo = function(city, state){
     var apiUrl = "http://api.geonames.org/searchJSON?q=" + city + "&adminCode1=" + state + "&maxRows=10&username=dannyramirezgd"
@@ -15,9 +30,14 @@ var getLocationInfo = function(city, state){
     fetch(apiUrl).then(function(response){
         if(response.ok){
             response.json().then(function(data){
+                if (data.geonames.length > 1){
                 var lat = (data.geonames[0].lat)
                 var lon = (data.geonames[0].lng)
                 getWeatherInfo(lat, lon);
+                } else {
+                    alert("Please enter a valid City and State");
+                    return;
+                }
             });
         }else{
             alert("Error")
@@ -31,7 +51,13 @@ var getWeatherInfo = function (lat, lon){
     fetch(apiUrl).then(function(response){
         if(response.ok){
             response.json().then(function(data){
+                var cityName = cityInput.value;
+                var selectValue = select.options[select.selectedIndex].value;
                 localStorage.setItem("weather", JSON.stringify(data));
+                cityNameObj = {"cityName": cityName, "state" : selectValue, "lat" : lat, "lon": lon};
+                saveCityNameArr();
+                createFocusedCity();
+                createFutureCity();
             });
         } else {
             alert("Error: Did not receive response");
@@ -40,20 +66,19 @@ var getWeatherInfo = function (lat, lon){
 }
 //create when button is clicked create city and state info for location and weather info functions
 var searchButtonHandler = function (event){
-    event.preventDefault()
-    var value = select.options[select.selectedIndex].value;
     var cityName = cityInput.value;
-    getLocationInfo(cityName, value)
-    localStorage.setItem("cityname", JSON.stringify(cityName, value));
-    createFocusedCity();
-    searchHistory();
-    createFutureCity();
+    var selectValue = select.options[select.selectedIndex].value;
+    event.preventDefault()
+    getLocationInfo(cityName, selectValue)
+    forecastEl.innerHTML = "";
+    focusCityEl.innerHTML = "";
+
 }
 //create container and information for the searched city
 var createFocusedCity = function(){
     var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
     focusCityEl.textContent = "";
-    focusCityEl.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value; 
+    focusCityEl.textContent = cityInput.value + ", " + select.options[select.selectedIndex].value; 
     var currentDate = new Date(getWeatherInfo.current.dt * 1000)
     var dateEl = document.createElement("div");
     dateEl.textContent = currentDate.toLocaleString();
@@ -72,9 +97,16 @@ var createFocusedCity = function(){
 }
 //create new button for each searched city to create a search history
 var searchHistory = function(){
-    var searchHistoryBtn = document.createElement("button")
-    searchHistoryBtn.textContent = cityInput.value + " , " + select.options[select.selectedIndex].value;
-    searchHistoryEl.appendChild(searchHistoryBtn);
+    if(JSON.parse(localStorage.getItem("cityNameArr"))===null){
+        searchHistoryArr = [];
+    } else {
+        searchHistoryArr = (JSON.parse(localStorage.getItem("cityNameArr")));
+        for (var i=0; i<searchHistoryArr.length; i++){
+            var searchHistoryBtn = document.createElement("button")
+            searchHistoryBtn.textContent = searchHistoryArr[i].cityName + ", " + searchHistoryArr[i].state;
+            searchHistoryEl.appendChild(searchHistoryBtn)
+        }
+    }
 }
 //create the 5 day forecast based on the city searched
 var createFutureCity = function(){
@@ -108,4 +140,5 @@ var createFutureCity = function(){
         //cloudy - cloud - word is main:"Clouds"
         //rainy - water drop - word is main:"Rain"
         //snowy - snowflake - word is main:"Snow"
+searchHistory();
 searchBtnEl.addEventListener("click", searchButtonHandler);
