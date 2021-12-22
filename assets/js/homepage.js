@@ -156,7 +156,7 @@ var createFocusedCity = function (city, state) {
   if(getWeatherInfo.current.uvi <= 2){
     uviElColor.setAttribute("class", "bg-success")
   }
-  if(getWeatherInfo.current.uvi >= 3 || getWeatherInfo.current.uvi <=7){
+  if(getWeatherInfo.current.uvi >= 3 && getWeatherInfo.current.uvi <=7){
     uviElColor.setAttribute("class", "bg-warning");
   }
   if(getWeatherInfo.current.uvi > 7){
