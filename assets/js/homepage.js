@@ -342,7 +342,7 @@ var createFutureCity = function () {
     futureDateEl.textContent = "(" + futureDate + ") "
     //create ul for all the elements
     var forecastListEl = document.createElement("ul");
-    forecastListEl.setAttribute("class","card col-2 bg-primary")
+    forecastListEl.setAttribute("class","card col-12 col-md-6 col-lg-2 my-1 bg-primary")
     //create an li for all the different forecasts
     var forecastTempEl = document.createElement("li");
     forecastTempEl.setAttribute("class", "list-group-item border-0 bg-primary text-white");
