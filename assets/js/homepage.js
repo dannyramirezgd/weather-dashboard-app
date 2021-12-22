@@ -168,6 +168,7 @@ var createFocusedCity = function (city, state) {
   focusCityEl.appendChild(dateEl);
   focusCityEl.appendChild(tempEl);
   focusCityEl.appendChild(windEl);
+  focusCityEl.appendChild(humidEl);
   focusCityEl.appendChild(uviEl);
   createFutureCity();
 };
@@ -306,6 +307,7 @@ var createFocusedCitySearchHis = function(){
     focusCityEl.appendChild(dateEl);
     focusCityEl.appendChild(tempEl);
     focusCityEl.appendChild(windEl);
+    focusCityEl.appendChild(humidEl);
     focusCityEl.appendChild(uviEl);
     createFutureCity();
   };
