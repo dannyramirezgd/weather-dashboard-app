@@ -12,6 +12,7 @@ var selectValue = "";
 var cityName = "";
 var cityNameObj = {};
 var cityNameArr = [];
+
 var saveCityNameArr = function () {
   if (!JSON.parse(localStorage.getItem("cityNameArr"))) {
     cityNameArr.push(cityNameObj);
@@ -73,6 +74,7 @@ var getWeatherInfo = function (lat, lon) {
         };
         saveCityNameArr();
         createFocusedCity(cityName, selectValue);
+        singleSearchHisBtn();
       });
     } else {
       alert("Error: Did not receive response");
@@ -84,22 +86,41 @@ var getWeatherInfo = function (lat, lon) {
 var searchButtonHandler = function (event) {
   var cityName = cityInput.value;
   var selectValue = select.options[select.selectedIndex].value;
+  var wholeTag = cityInput.value + ", " + select.options[select.selectedIndex].value;
   if (!cityName) {
     alert("Please enter a City Name");
     return;
-  } else {
-    event.preventDefault();
-    getLocationInfo(cityName, selectValue);
-    forecastEl.innerHTML = "";
-    focusCityEl.innerHTML = "";
-    singleSearchHisBtn();
+  } else { 
+    debugger;
+    var audit = false; 
+    var historyBtns = document.querySelectorAll("#history-btn");
+    while(audit !== true){
+      if(historyBtns.length === 0){
+        break;
+      }
+      for(i=0; i<historyBtns.length; i++){
+        if (audit===true){
+          break;
+        }
+         else if(wholeTag === historyBtns[i].textContent){
+          alert("City Name has already been searched, please click on search History")
+          return;
+        }
+      }
+      audit = true;
+    }
+        event.preventDefault();
+        getLocationInfo(cityName, selectValue);
+        forecastEl.innerHTML = "";
+        focusCityEl.innerHTML = "";
+    
   }
 };
 //create container and information for the searched city
 var createFocusedCity = function (city, state) {
   var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
   focusCityEl.textContent = "";
-  focusCityEl.textContent = city + ", " + state;
+  focusCityEl.textContent =  city + ", " + state;
   var currentDate = new Date(getWeatherInfo.current.dt * 1000);
   var dateEl = document.createElement("div");
   dateEl.textContent = currentDate.toLocaleString();
@@ -144,14 +165,83 @@ var singleSearchHisBtn = function (){
 //search the location and print info when clicking the search history button
 var searchHistoryBtnClickHandler = function (event){
     if(event.target.id = "history-btn"){
+        var textInputForTitleEl = event.target.textContent;
+        localStorage.setItem("cityNameEl", JSON.stringify(textInputForTitleEl));
         var createInput = event.target.textContent.split(",");
         var cityName = createInput[0]
-        console.log(cityName);
         var selectValue = createInput[1]
         event.preventDefault();
-        createFocusedCity(cityName, selectValue);
+        getLocationInfoSearchHis(cityName, selectValue);
         }
     }
+//grabbing input from form and dropdown and pulling the lat and lon
+var getLocationInfoSearchHis = function (city, state) {
+  var apiUrl =
+    "http://api.geonames.org/searchJSON?q=" +
+    city +
+    "&adminCode1=" +
+    state +
+    "&maxRows=10&username=dannyramirezgd";
+
+  fetch(apiUrl).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        if (data.geonames.length > 1) {
+          var lat = data.geonames[0].lat;
+          var lon = data.geonames[0].lng;
+          getWeatherInfoSearchHis(lat, lon);
+        } else {
+          alert("Please enter a valid City and State");
+          return;
+        }
+      });
+    } else {
+      alert("Error");
+    }
+  });
+};
+var getWeatherInfoSearchHis = function (lat, lon) {
+  var apiUrl =
+    "https://api.openweathermap.org/data/2.5/onecall?lat=" +
+    lat +
+    "&lon=" +
+    lon +
+    "&units=imperial&appid=56d05661cb74c3389542f3c94dddc04e";
+
+  fetch(apiUrl).then(function (response) {
+    if (response.ok) {
+      response.json().then(function (data) {
+        localStorage.setItem("weather", JSON.stringify(data));
+        createFocusedCitySearchHis();
+      });
+    } else {
+      alert("Error: Did not receive response");
+    }
+  });
+};
+var createFocusedCitySearchHis = function(){
+    var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
+    var titleEl = JSON.parse(localStorage.getItem("cityNameEl"));
+    focusCityEl.textContent = "";
+    focusCityEl.textContent = titleEl;
+    var currentDate = new Date(getWeatherInfo.current.dt * 1000);
+    var dateEl = document.createElement("div");
+    dateEl.textContent = currentDate.toLocaleString();
+    var tempEl = document.createElement("li");
+    tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
+    var windEl = document.createElement("li");
+    windEl.textContent =
+      "Wind Speed: " + getWeatherInfo.current.wind_speed + " mph";
+    var humidEl = document.createElement("li");
+    humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%";
+    var uviEl = document.createElement("li");
+    uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi;
+    focusCityEl.appendChild(dateEl);
+    focusCityEl.appendChild(tempEl);
+    focusCityEl.appendChild(windEl);
+    focusCityEl.appendChild(uviEl);
+    createFutureCity();
+  };
 //create the 5 day forecast based on the city searched
 var createFutureCity = function () {
     forecastEl.innerHTML = "";
