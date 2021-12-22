@@ -91,7 +91,6 @@ var searchButtonHandler = function (event) {
     alert("Please enter a City Name");
     return;
   } else { 
-    debugger;
     var audit = false; 
     var historyBtns = document.querySelectorAll("#history-btn");
     while(audit !== true){
