@@ -1,3 +1,4 @@
+
 var cityInputEl = document.querySelector("#city-name");
 var stateInputEl = document.querySelector("#states");
 var searchBtnEl = document.querySelector("#search-btn");
@@ -118,11 +119,27 @@ var searchButtonHandler = function (event) {
 //create container and information for the searched city
 var createFocusedCity = function (city, state) {
   var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
+  if (getWeatherInfo.current.weather[0].main === "Clear"){
+    var weatherIcon = document.createElement("i")
+    weatherIcon.setAttribute("class", 'ri-sun-line');
+  }
+  else if (getWeatherInfo.current.weather[0].main === "Clouds"){
+    var weatherIcon = document.createElement("i")
+    weatherIcon.setAttribute("class", "ri-cloudy-line")
+  }
+  else if (getWeatherInfo.current.weather[0].main === "Rain"){
+    var weatherIcon = document.createElement("i")
+    weatherIcon.setAttribute("class", 'ri-showers-line');
+  }
+  else if (getWeatherInfo.current.weather[0].main === "Snow"){
+    var weatherIcon = document.createElement("i")
+    weatherIcon.setAttribute ("class",'ri-snowy-line')
+  }
   focusCityEl.textContent = "";
   focusCityEl.textContent =  city + ", " + state;
-  var currentDate = new Date(getWeatherInfo.current.dt * 1000);
+  var currentDate = moment().format("M/D/YYYY")
   var dateEl = document.createElement("div");
-  dateEl.textContent = currentDate.toLocaleString();
+  dateEl.textContent = "(" + currentDate + ")"
   var tempEl = document.createElement("li");
   tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
   var windEl = document.createElement("li");
@@ -132,6 +149,7 @@ var createFocusedCity = function (city, state) {
   humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%";
   var uviEl = document.createElement("li");
   uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi;
+  dateEl.appendChild(weatherIcon);
   focusCityEl.appendChild(dateEl);
   focusCityEl.appendChild(tempEl);
   focusCityEl.appendChild(windEl);
@@ -220,12 +238,28 @@ var getWeatherInfoSearchHis = function (lat, lon) {
 };
 var createFocusedCitySearchHis = function(){
     var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
+    if (getWeatherInfo.current.weather[0].main === "Clear"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", 'ri-sun-line');
+    }
+    else if (getWeatherInfo.current.weather[0].main === "Clouds"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", "ri-cloudy-line")
+    }
+    else if (getWeatherInfo.current.weather[0].main === "Rain"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", 'ri-showers-line');
+    }
+    else if (getWeatherInfo.current.weather[0].main === "Snow"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute ("class",'ri-snowy-line')
+    }
     var titleEl = JSON.parse(localStorage.getItem("cityNameEl"));
     focusCityEl.textContent = "";
     focusCityEl.textContent = titleEl;
-    var currentDate = new Date(getWeatherInfo.current.dt * 1000);
+    var currentDate = moment().format("M/D/YYYY")
     var dateEl = document.createElement("div");
-    dateEl.textContent = currentDate.toLocaleString();
+    dateEl.textContent = "(" + currentDate + ")"
     var tempEl = document.createElement("li");
     tempEl.textContent = "Current Temp: " + getWeatherInfo.current.temp + " °F";
     var windEl = document.createElement("li");
@@ -235,6 +269,7 @@ var createFocusedCitySearchHis = function(){
     humidEl.textContent = "Humidity: " + getWeatherInfo.current.humidity + "%";
     var uviEl = document.createElement("li");
     uviEl.textContent = "UVI: " + getWeatherInfo.current.uvi;
+    dateEl.appendChild(weatherIcon);
     focusCityEl.appendChild(dateEl);
     focusCityEl.appendChild(tempEl);
     focusCityEl.appendChild(windEl);
@@ -246,9 +281,27 @@ var createFutureCity = function () {
     forecastEl.innerHTML = "";
   var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
   for (let i = 0; i < 5; i++) {
+    if (getWeatherInfo.daily[i].weather[0].main === "Clear"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", 'ri-sun-line');
+    }
+    else if (getWeatherInfo.daily[i].weather[0].main === "Clouds"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", "ri-cloudy-line")
+    }
+    else if (getWeatherInfo.daily[i].weather[0].main === "Rain"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute("class", 'ri-showers-line');
+    }
+    else if (getWeatherInfo.daily[i].weather[0].main === "Snow"){
+      var weatherIcon = document.createElement("i")
+      weatherIcon.setAttribute ("class",'ri-snowy-line')
+    }
     var forecastListContainerEl = document.createElement("div");
     //get moment.js and add a day each time
-    //add if statement for current weather and add icon
+    var futureDate = moment().add(i+1, "days").format("M/D/YYYY");
+    var futureDateEl = document.createElement("div");
+    futureDateEl.textContent = "(" + futureDate + ")"
     //create ul for all the elements
     var forecastListEl = document.createElement("ul");
     //create an li for all the different forecasts
@@ -261,6 +314,8 @@ var createFutureCity = function () {
     var forecastHumidEl = document.createElement("li");
     forecastHumidEl.textContent =
       "Humidity: " + getWeatherInfo.daily[i].humidity + "%";
+    futureDateEl.appendChild(weatherIcon);
+    forecastListEl.appendChild(futureDateEl);
     forecastListEl.appendChild(forecastTempEl);
     forecastListEl.appendChild(forecastWindEl);
     forecastListEl.appendChild(forecastHumidEl);
