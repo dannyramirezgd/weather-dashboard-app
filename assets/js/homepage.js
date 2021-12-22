@@ -28,7 +28,7 @@ var saveCityNameArr = function () {
 //grabbing input from form and dropdown and pulling the lat and lon
 var getLocationInfo = function (city, state) {
   var apiUrl =
-    "http://api.geonames.org/searchJSON?q=" +
+    "https://secure.geonames.org/searchJSON?q=" +
     city +
     "&adminCode1=" +
     state +
@@ -212,7 +212,7 @@ var searchHistoryBtnClickHandler = function (event){
 //grabbing input from form and dropdown and pulling the lat and lon
 var getLocationInfoSearchHis = function (city, state) {
   var apiUrl =
-    "http://api.geonames.org/searchJSON?q=" +
+    "https://secure.geonames.org/searchJSON?q=" +
     city +
     "&adminCode1=" +
     state +
