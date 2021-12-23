@@ -1,4 +1,4 @@
-# weather-dashboard-app
+# Weather Dashboard App
 ## Purpose
 To allow a user to search a city and state and pull weather info for the current date and a 5 day forecast
 ## Frameworks implemented
