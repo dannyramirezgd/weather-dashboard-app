@@ -12,7 +12,16 @@ var selectValue = "";
 var cityName = "";
 var cityNameObj = {};
 var cityNameArr = [];
-
+var forecastTitleEl = document.getElementById("forecast-title");
+var clearLocalStorage = function(){
+var checkLocalStorage = JSON.parse(localStorage.getItem("cityNameArr"));
+  if(checkLocalStorage === null){
+    return;
+  }
+  if (checkLocalStorage.length >= 11){
+    localStorage.clear();
+  }
+}
 var saveCityNameArr = function () {
   if (!JSON.parse(localStorage.getItem("cityNameArr"))) {
     cityNameArr.push(cityNameObj);
@@ -153,18 +162,19 @@ var createFocusedCity = function (city, state) {
   uviEl.setAttribute("class", "list-group-item border-0")
   uviEl.textContent = "UV Index: ";
   var uviElColor = document.createElement("span");
-  if(getWeatherInfo.current.uvi <= 2){
-    uviElColor.setAttribute("class", "bg-success")
+  if(getWeatherInfo.current.uvi < 3){
+    uviElColor.setAttribute("class", "bg-success text-white rounded px-3")
   }
   if(getWeatherInfo.current.uvi >= 3 && getWeatherInfo.current.uvi <=7){
-    uviElColor.setAttribute("class", "bg-warning");
+    uviElColor.setAttribute("class", "bg-warning text-white rounded px-3");
   }
   if(getWeatherInfo.current.uvi > 7){
-    uviElColor.setAttribute("class","bg-danger");
+    uviElColor.setAttribute("class","bg-danger text-white rounded px-3");
   }
   uviElColor.textContent = getWeatherInfo.current.uvi
   uviEl.appendChild(uviElColor);
   dateEl.appendChild(weatherIcon);
+  focusCityEl.setAttribute("class", "border border-dark");
   focusCityEl.appendChild(dateEl);
   focusCityEl.appendChild(tempEl);
   focusCityEl.appendChild(windEl);
@@ -292,18 +302,19 @@ var createFocusedCitySearchHis = function(){
     uviEl.setAttribute("class", "list-group-item border-0")
     uviEl.textContent = "UV Index: ";
     var uviElColor = document.createElement("span");
-    if(getWeatherInfo.current.uvi <= 2){
-      uviElColor.setAttribute("class", "bg-success")
+    if(getWeatherInfo.current.uvi < 3){
+      uviElColor.setAttribute("class", "bg-success text-white rounded px-3")
     }
     if(getWeatherInfo.current.uvi >= 3 && getWeatherInfo.current.uvi <=7){
-      uviElColor.setAttribute("class", "bg-warning");
+      uviElColor.setAttribute("class", "bg-warning text-white rounded px-3");
     }
     if(getWeatherInfo.current.uvi > 7){
-      uviElColor.setAttribute("class","bg-danger");
+      uviElColor.setAttribute("class","bg-danger text-white rounded px-3");
     }
     uviElColor.textContent = getWeatherInfo.current.uvi
     uviEl.appendChild(uviElColor);
     dateEl.appendChild(weatherIcon);
+    focusCityEl.setAttribute("class", "border border-dark");
     focusCityEl.appendChild(dateEl);
     focusCityEl.appendChild(tempEl);
     focusCityEl.appendChild(windEl);
@@ -314,6 +325,8 @@ var createFocusedCitySearchHis = function(){
 //create the 5 day forecast based on the city searched
 var createFutureCity = function () {
     forecastEl.innerHTML = "";
+    forecastTitleEl.innerHTML = "";
+    forecastTitleEl.textContent = "5 Day Weather Forecast"
 //var cardContainerEl = document.createElement("div");
   var getWeatherInfo = JSON.parse(localStorage.getItem("weather"));
   for (let i = 0; i < 5; i++) {
@@ -342,7 +355,7 @@ var createFutureCity = function () {
     futureDateEl.textContent = "(" + futureDate + ") "
     //create ul for all the elements
     var forecastListEl = document.createElement("ul");
-    forecastListEl.setAttribute("class","card col-12 col-md-6 col-lg-2 my-1 bg-primary")
+    forecastListEl.setAttribute("class","card col-12 col-md-6 col-lg-2 my-1 bg-primary border border-dark")
     //create an li for all the different forecasts
     var forecastTempEl = document.createElement("li");
     forecastTempEl.setAttribute("class", "list-group-item border-0 bg-primary text-white");
@@ -374,6 +387,7 @@ var createFutureCity = function () {
 //rainy - water drop - word is main:"Rain"
 //snowy - snowflake - word is main:"Snow"
 searchHistory();
+clearLocalStorage();
 searchBtnEl.addEventListener("click", searchButtonHandler);
 searchHistoryBtnEl.addEventListener("click", searchHistoryBtnClickHandler)
 
